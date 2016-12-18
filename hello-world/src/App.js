@@ -1,18 +1,26 @@
 import React from 'react';
 
 class App extends React.Component {
-  render() {
-    let text = this.props.text;
-    return (
-        <h1>{text}</h1>
-      );
-  }
-}
+    constructor() {
+        super();
+        this.state = {
+            text: 'This is state text',
+            cat: 0
+        };
+    }
 
+    update(e) {
+        this.setState({text: e.target.value});
+    }
 
-App.propTypes = {
-  text: React.PropTypes.string,
-  cat: React.PropTypes.number.isRequired
+    render() {
+        return (
+            <div>
+                <input type="text" onChange={this.update.bind(this)}/>
+                <h1>{this.state.text} - {this.state.cat}</h1>
+            </div>    
+        );
+    }
 }
 
 

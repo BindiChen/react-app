@@ -4,6 +4,6 @@ import App from './App';
 import './index.css';
 
 ReactDOM.render(
-  <App text="a text string" cat={5} />,
+  <App cat={5} />,
   document.getElementById('root')
 );
