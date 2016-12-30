@@ -1,45 +1,53 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 
 class App extends React.Component {
-    constructor() {
-        super();
-        this.state = {a: ''};
+
+   constructor(){
+       super();
+       this.state = {val: 0};
+       this.update = this.update.bind(this);
+   }
+
+   update(){
+       this.setState({val: this.state.val + 1});
+   }
+
+   componentWillMount(){
+       console.log('componentWillMount');
+   }
+
+   componentDidMount(){
+       console.log('componentDidMount');
+   }
+
+   componentWillUnmount(){
+       console.log('compoenntWillUnmount');
+   }
+
+   render(){
+       console.log('render');
+       return <button onClick={this.update}>{this.state.val} </button>
+   }
+}
+
+class Wrapper extends React.Component {
+    mount(){
+        ReactDOM.render(<App />, document.getElementById('a'))
     }
-    update(e) {
-        this.setState({
-            a: this.refs.a.value,
-            b: this.refs.b.value
-        })
+    unmount(){
+        ReactDOM.unmountComponentAtNode(document.getElementById('a'))
     }
-    render() {
+    render(){
         return (
             <div>
-                <input type="text"
-                    ref="a"
-                    onChange={this.update.bind(this)}/> 
-                {this.state.a}
-                <input type="text"
-                    ref="b"
-                    onChange={this.update.bind(this)}/> 
-                {this.state.b}
+                <button onClick={this.mount.bind(this)}>Mount</button>
+                <button onClick={this.unmount.bind(this)}>Unmount</button>
+                <div id="a"></div>
             </div>
         );
     }
 }
 
 
-const Title = (props) => <h1>Title: {props.text}</h1>
-
-// Custom propType validation
-Title.propTypes = {
-    text(props, propName, component) {
-        if(!(propName in props)) {
-            return new Error(`mising ${propName}`);
-        }
-        if(props[propName].length < 6) {
-            return new Error(`${propName} was too short`);
-        }
-    }
-};
-
-export default App;
+export default Wrapper;
