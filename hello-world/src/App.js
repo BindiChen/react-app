@@ -1,42 +1,57 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-class App extends React.Component {
-
+const HOC = (InnerComponent) => class extends React.Component {
     constructor() {
         super();
-        this.state = {items: []};
+        this.state = {count: 0};
     }
-
     componentWillMount() {
-        fetch('http://swapi.co/api/people/?format=json')
-            .then( response => response.json() )
-            .then( ({results: items}) => this.setState({items}))
+        console.log('Will Mount');
     }
+    update() {
+        this.setState({count: this.state.count + 1});
+    }
+    render() {
+        return (
+            <InnerComponent
+                {...this.props}
+                {...this.state}
+                update={this.update.bind(this)}
+            />
+        );
+    }
+}
 
-    filter (e) {
-        this.setState({filter: e.target.value});
+class App extends React.Component {
+    render() {
+        return (
+            <div>
+                <Button>button</Button>
+                <hr/>
+                <LabelHOC>label</LabelHOC>
+            </div>
+        );
+    }
+}
+
+const Button = HOC((props) =>
+    <button onClick={props.update}>{props.children} - {props.count}</button>)
+
+class Label extends React.Component {
+    componentWillMount() {
+        console.log('Label componentWillMount');
     }
 
     render() {
-        let items = this.state.items;
-        if(this.state.filter){
-            items = items.filter( item =>
-                item.name.toLowerCase()
-                .includes(this.state.filter.toLowerCase()))
-        }
         return (
-            <div>
-                <input type="text"
-                    onChange={this.filter.bind(this)} />
-                {items.map( item =>
-                <Person person={item} key={item.name} />)}
-            </div>
+            <label onMouseMove={this.props.update}>
+                {this.props.children} - {this.props.count}
+            </label>
         )
     }
 }
 
-const Person = (props) => <h4>{props.person.name}</h4>
-App.defaultProps = {val: 0};
+const LabelHOC = HOC(Label)
 
 export default App;
